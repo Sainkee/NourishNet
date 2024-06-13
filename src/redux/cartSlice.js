@@ -7,8 +7,7 @@ import {
 
 const initialState = {
   cart: [],
-  status: "idle",
-  error: null,
+ 
 };
 
 // export const fetchCart = createAsyncThunk(
@@ -41,7 +40,9 @@ const cartSlice = createSlice({
       state.error = null;
     },
     addToCart: (state, action) => {
+
       const { cartItem, userId } = action.payload;
+      console.log(cartItem, userId,"/.");
       const item = state.cart.find((item) => item.id === cartItem.id);
       if (item) {
         item.quantity++;

@@ -11,8 +11,7 @@ import {
 } from "lucide-react"; // Importing Moon and Sun icons for theme toggle
 import { signOutUser } from "../../services/firebase";
 import { toast } from "react-toastify";
-import { updateCart, resetCart } from "../../redux/cartSlice";
-import { fetchCartFromFirestore } from "../../services/helper";
+import { resetCart } from "../../redux/cartSlice";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -22,11 +21,7 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const Cart = useSelector((state) => state.cart.cart);
-  const [cartLength, setCartLength] = useState(Cart.length);
-
-  useEffect(() => {
-  setCartLength(Cart.length)
-  }, [Cart]);
+ 
 
   const handleLogout = async () => {
     await signOutUser(dispatch);
@@ -47,7 +42,7 @@ export default function Header() {
   };
 
   const toggleMenu = () => {
-    setOpen(!open); 
+    setOpen(!open);
   };
 
   const toggleTheme = () => {
@@ -58,7 +53,7 @@ export default function Header() {
 
   const applyTheme = (theme) => {
     const body = document.body;
-  
+
     if (theme === "dark") {
       body.style.backgroundColor = "#000000";
       body.style.color = "orange";
@@ -133,9 +128,7 @@ export default function Header() {
             >
               {darkTheme ? <Moon /> : <Sun />}
             </button>
-            <Link
-              className="relative bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center"
-            >
+            <Link className="relative bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
               {user && user.displayName ? (
                 <span className="text-lg font-bold bg-transparent flex items-center justify-center">
                   {getUserInitials(user)}
@@ -144,7 +137,7 @@ export default function Header() {
                 <CircleUserRound color="black" />
               )}
             </Link>
-           
+
             <NavLink
               to="/cart"
               className={({ isActive }) =>
@@ -156,11 +149,14 @@ export default function Header() {
               <ShoppingCart className="w-8 h-8 flex items-center justify-center" />
               {Cart && Cart.length > 0 && (
                 <span className="absolute  z-40 -top-3 px-1 -right-1 rounded-full text-white bg-red-600">
-                  {cartLength}
+                  {Cart.length}
                 </span>
               )}
             </NavLink>
-            <Linkedin className="w-8 h-8 flex items-center justify-center" color="black"/>
+            <Linkedin
+              className="w-8 h-8 flex items-center justify-center"
+              color="black"
+            />
           </div>
 
           <div className="flex gap-2">
@@ -173,14 +169,17 @@ export default function Header() {
                     : "text-gray-700 hover:text-orange-500 relative"
                 }
               >
-                <ShoppingCart className="w-6 h-6 flex items-center justify-center" color="black" />
+                <ShoppingCart
+                  className="w-6 h-6 flex items-center justify-center"
+                  color="black"
+                />
                 {Cart && Cart.length > 0 && (
                   <span className="absolute z-40 -top-3 px-1 -right-1 rounded-full text-white bg-red-600">
-                    {cartLength}
+                    {Cart.length}
                   </span>
                 )}
               </NavLink>
-              
+
               <button
                 className="relative bg-gray-200 rounded-full w-6 h-6 flex items-center justify-center"
                 onClick={toggleTheme}
@@ -188,7 +187,10 @@ export default function Header() {
                 {darkTheme ? <Moon size={16} /> : <Sun size={16} />}
               </button>
 
-              <span className="cursor-pointer flex items-center justify-center" onClick={toggleMenu}>
+              <span
+                className="cursor-pointer flex items-center justify-center"
+                onClick={toggleMenu}
+              >
                 <AlignLeft className="w-6 h-6" />
               </span>
             </div>
@@ -221,13 +223,12 @@ export default function Header() {
               {isAuthenticated ? (
                 <NavLink
                   to="/"
-                   onClick={handleLogout}
+                  onClick={handleLogout}
                   className={({ isActive }) =>
                     isActive
                       ? "block px-4 py-2 text-orange-500 font-semibold"
                       : "block px-4 py-2 text-gray-700 hover:text-orange-500 transition-colors duration-300"
                   }
-                  
                 >
                   Logout
                 </NavLink>
