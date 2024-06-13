@@ -44,8 +44,8 @@ NourishNet is a web application for online grocery shopping. It allows users to 
 
 ## Screenshots
 
-![Screenshot 1](csr1.png)
-![Screenshot 2](scr2.png)
+![Screenshot 1](public/scr1.png)
+![Screenshot 2](public/scr2.png)
 
 ## Contributing
 
