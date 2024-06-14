@@ -9,7 +9,7 @@ export default function Error() {
   return (
     <div className=" relative bg-white  bg-opacity-75 w-full  h-screen text-center flex items-center   justify-center rounded-lg shadow-lg">
       <h1 className="text-4xl md:text-6xl font-bold text-gray-500 mb-4">
-        Oh no! Something went wrong.
+        Oh no! Something went wrong.<Link className="text-blue-500 underline" to={"/"}>Go to Home</Link>
       </h1>
       
       <p className="text-lg text-gray-700">
