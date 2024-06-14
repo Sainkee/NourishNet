@@ -68,8 +68,9 @@ const signInWithEmailPassword = async (email, password, dispatch) => {
     const user = result.user;
 
     dispatch(login(user));
-    const cartdata = await syncfirestore(user);
-    dispatch(updateCart({cartdata, user}));
+    const cartItem = await syncfirestore(user);
+    console.log(cartItem,">?>?>?>");
+    dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
   } catch (error) {
     console.error("Error signing in with email and password:", error);
     throw new Error("Error signing in with email and password");
@@ -82,7 +83,7 @@ const signOutUser = async (dispatch) => {
     dispatch(
       logout()
     );
-    localStorage.removeItem("cart");
+    
   } catch (error) {
     console.error("Error signing out:", error);
     throw new Error("Error signing out");

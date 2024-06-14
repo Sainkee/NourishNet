@@ -1,49 +1,40 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchCartFromFirestore = async (userId) => {
-    if (!userId) {
-      throw new Error("User ID is undefined");
-    }
-  
-    const ref = doc(db, "cartItems", userId);
-    const docSnap = await getDoc(ref);
-  
-    if (!docSnap.exists()) {
-      console.log("No such document!");
-      return []; // Return an empty array if the document does not exist
-    }
-  
-    const data = docSnap.data();
-    if (!data || !data.cart) {
-      console.log("Cart data is not available!");
-      return []; // Return an empty array if the cart data is not available
-    }
-  
-    console.log(data.cart, ">>>>>>>>>>doctype");
-    return data.cart;
-  };
+  if (!userId) {
+    throw new Error("User ID is undefined");
+  }
+
+  const ref = doc(db, "cartItems", userId);
+  const docSnap = await getDoc(ref);
+
+  console.log(`Fetching cart for userId: ${userId}`);
+
+  if (!docSnap.exists()) {
+    console.log("No cart document found for userId:", userId);
+    return []; // Return an empty array if the document does not exist
+  }
+
+  const data = docSnap.data();
+  console.log("Document data:", data);
+  return data.cart || []; // Assuming cart data is stored under 'cart' field
+};
 
 export const saveCartToFirestore = async (userId, cart) => {
   if (!userId) {
     throw new Error("User ID is undefined");
   }
   const ref = doc(db, "cartItems", userId);
-  await setDoc(ref, { cart });
+  await setDoc(ref, { ...cart });
 };
 
-export const fetchCart = createAsyncThunk("cart/fetchCart", async (userId) => {
-  const fireCart = await fetchCartFromFirestore(userId);
-  return fireCart;
-});
-
-export const saveCart = createAsyncThunk(
-  "cart/saveCart",
-  async ({ userId, cart }) => {
-    await saveCartToFirestore(userId, cart);
-  }
-);
+// export const saveCart = createAsyncThunk(
+//   "cart/saveCart",
+//   async ({ userId, cart }) => {
+//     await saveCartToFirestore(userId, cart);
+//   }
+// );
 
 // Helper function to load cart from local storage
 export const loadCartFromLocalStorage = () => {
@@ -71,20 +62,21 @@ export const saveCartToLocalStorage = (cart) => {
 };
 
 export const syncfirestore = async (user) => {
-  const localCart = loadCartFromLocalStorage() || [];
-  const firestoreCart = await fetchCartFromFirestore(user.uid);
-
-  const mergedCart = [...localCart, ...firestoreCart];
-  if (localCart.length > 0) {
-    localStorage.removeItem("cart");
+  if (!user || !user.uid) {
+    throw new Error("Invalid user object or user ID");
   }
+
+  const firestoreCart = await fetchCartFromFirestore(user.uid);
+  const localCart = loadCartFromLocalStorage() || [];
+
+  const mergedCart = [...firestoreCart, ...localCart];
+
   return mergedCart;
 };
 
 export const ratepercents = (rate) => {
-    return rate.toLocaleString(undefined, {
-      style: "currency",
-      currency: "INR",
-      
-    });
-  };
+  return rate.toLocaleString(undefined, {
+    style: "currency",
+    currency: "INR",
+  });
+};

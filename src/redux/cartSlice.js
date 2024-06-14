@@ -1,26 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  fetchCartFromFirestore,
-  saveCartToFirestore,
-  saveCartToLocalStorage,
-} from "../services/helper";
+import { createSlice } from "@reduxjs/toolkit";
+import { saveCartToFirestore, saveCartToLocalStorage } from "../services/helper";
 
 const initialState = {
   cart: [],
- 
 };
-
-// export const fetchCart = createAsyncThunk(
-//   'cart/fetchCart',
-//   async (userId, thunkAPI) => {
-//     try {
-//       const cart = await fetchCartFromFirestore(userId);
-//       return cart;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue({ error: error.message });
-//     }
-//   }
-// );
 
 const cartSlice = createSlice({
   name: "cart",
@@ -28,7 +11,7 @@ const cartSlice = createSlice({
   reducers: {
     updateCart: (state, action) => {
       const { cartItem, userId } = action.payload;
-      state.cart = cartItem;
+      state.cart = cartItem || []; // Ensure cartItem is always an array
 
       if (userId) {
         saveCartToFirestore(userId, state.cart);
@@ -36,13 +19,14 @@ const cartSlice = createSlice({
     },
     resetCart: (state) => {
       state.cart = [];
-      state.status = "idle";
-      state.error = null;
     },
     addToCart: (state, action) => {
-
       const { cartItem, userId } = action.payload;
-      console.log(cartItem, userId,"/.");
+
+      if (!Array.isArray(state.cart)) {
+        state.cart = []; // Ensure cart is an array
+      }
+
       const item = state.cart.find((item) => item.id === cartItem.id);
       if (item) {
         item.quantity++;
@@ -56,8 +40,11 @@ const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      console.log(action.payload);
       const { id, userId } = action.payload;
+
+      if (!Array.isArray(state.cart)) {
+        state.cart = []; // Ensure cart is an array
+      }
 
       state.cart = state.cart.filter((item) => item.id !== id);
       if (userId) {
@@ -77,6 +64,11 @@ const cartSlice = createSlice({
     },
     incrementQuantity: (state, action) => {
       const { id, userId } = action.payload;
+
+      if (!Array.isArray(state.cart)) {
+        state.cart = []; // Ensure cart is an array
+      }
+
       const item = state.cart.find((item) => item.id === id);
       if (item) {
         item.quantity++;
@@ -89,6 +81,11 @@ const cartSlice = createSlice({
     },
     decrementQuantity: (state, action) => {
       const { id, userId } = action.payload;
+
+      if (!Array.isArray(state.cart)) {
+        state.cart = []; // Ensure cart is an array
+      }
+
       const item = state.cart.find((item) => item.id === id);
       if (item) {
         item.quantity--;
@@ -103,22 +100,7 @@ const cartSlice = createSlice({
       }
     },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(fetchCart.pending, (state) => {
-  //       state.status = 'loading';
-  //     })
-  //     .addCase(fetchCart.fulfilled, (state, action) => {
-  //       state.status = 'succeeded';
-  //       state.cart = action.payload;
-  //     })
-  //     .addCase(fetchCart.rejected, (state, action) => {
-  //       state.status = 'failed';
-  //       state.error = action.payload.error;
-  //     });
-  // },
 });
-
 
 export const {
   addToCart,

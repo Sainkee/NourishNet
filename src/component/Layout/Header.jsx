@@ -149,7 +149,7 @@ export default function Header() {
               <ShoppingCart className="w-8 h-8 flex items-center justify-center" />
               {Cart && Cart.length > 0 && (
                 <span className="absolute  z-40 -top-3 px-1 -right-1 rounded-full text-white bg-red-600">
-                  {Cart.length}
+                  {Cart?.length}
                 </span>
               )}
             </NavLink>
@@ -175,7 +175,7 @@ export default function Header() {
                 />
                 {Cart && Cart.length > 0 && (
                   <span className="absolute z-40 -top-3 px-1 -right-1 rounded-full text-white bg-red-600">
-                    {Cart.length}
+                    {Cart?.length}
                   </span>
                 )}
               </NavLink>

@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CartItemsCard from "../component/CartItemsCard";
 
@@ -10,12 +10,12 @@ export default function Cart() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.cart);
-  console.log(cartItems," cartItems");
+  console.log(cartItems, " cartItems");
   const navigate = useNavigate();
 
   const loadRazorpayScript = (src) => {
     return new Promise((resolve) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = src;
       script.onload = () => {
         resolve(true);
@@ -26,11 +26,9 @@ export default function Cart() {
       document.body.appendChild(script);
     });
   };
-  
- 
-  const handlePayment = async () => {
 
-    if(!user){
+  const handlePayment = async () => {
+    if (!user) {
       toast.error("Please Login First", {
         position: "bottom-right",
         theme: "colored",
@@ -58,13 +56,13 @@ export default function Cart() {
       description: "Test Transaction",
       image: "https://example.com/your_logo",
       handler: (response) => {
+        dispatch(resetCart());
+        navigate("/");
         toast.success("Payment Successful!", {
           position: "bottom-right",
           theme: "colored",
         });
         console.log(response);
-
-      
       },
       prefill: {
         name: user ? user.DisplayName : "",
@@ -78,13 +76,7 @@ export default function Cart() {
 
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
-
-    dispatch(resetCart())
-    navigate('/')
   };
-
-
-  
 
   const calculateSubtotal = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -100,7 +92,7 @@ export default function Cart() {
   const total = subtotal + tax;
 
   return (
-     <div className="mx-auto p-4 h-[100dvh] md:h-[70dvh] sm:flex-row justify-center mt-10 flex flex-col gap-6">
+    <div className="mx-auto p-4 h-[100dvh] md:h-[70dvh] sm:flex-row justify-center mt-10 flex flex-col gap-6">
       {/* Cart Items Section */}
       <div className="bg-white  p-4 md:max-h-[60dvh]   h-[80dvh] overflow-y-scroll cursor-pointer  grow shadow-lg rounded-lg">
         <h2 className="text-xl sm:text-2xl font-bold mb-4">Cart Items</h2>
@@ -139,7 +131,10 @@ export default function Cart() {
             Items: <span className="text-orange-500">{cartItems.length}</span>
           </p>
         </div>
-        <button onClick={handlePayment} className="mt-4 w-full whitespace-nowrap bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+        <button
+          onClick={handlePayment}
+          className="mt-4 w-full whitespace-nowrap bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+        >
           Proceed to Checkout
         </button>
       </div>
