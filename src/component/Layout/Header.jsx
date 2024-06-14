@@ -15,7 +15,7 @@ import { resetCart } from "../../redux/cartSlice";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [darkTheme, setDarkTheme] = useState(false); // State for theme toggle
+  const [darkTheme, setDarkTheme] = useState(true); // State for theme toggle
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();

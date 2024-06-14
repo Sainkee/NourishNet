@@ -17,7 +17,7 @@ export const fetchCartFromFirestore = async (userId) => {
   }
 
   const data = docSnap.data();
-  console.log("Document data:", data);
+ 
   return data.cart || []; // Assuming cart data is stored under 'cart' field
 };
 
@@ -67,6 +67,7 @@ export const syncfirestore = async (user) => {
   }
 
   const firestoreCart = await fetchCartFromFirestore(user.uid);
+console.log(firestoreCart,"doctype");
   const localCart = loadCartFromLocalStorage() || [];
 
   const mergedCart = [...firestoreCart, ...localCart];
