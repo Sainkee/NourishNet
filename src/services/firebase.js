@@ -12,6 +12,7 @@ import {
 import { login, logout } from "../redux/authSlice"; // Ensure the path is correct based on your project structure
 import { syncfirestore } from "./helper";
 import { updateCart } from "../redux/cartSlice";
+import { toast } from "react-toastify";
 
 // Firebase configuration object from your Firebase project settings
 
@@ -53,9 +54,14 @@ const signInWithGoogle = async (dispatch) => {
     const user = result.user;
 
     dispatch(login(user));
-    const cartdata = await syncfirestore(user);
-
-    dispatch(updateCart({cartdata, user}));
+    try {
+      cartItem = await syncfirestore(user);
+      console.log("Cart synced successfully:", cartItem);
+      dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
+    } catch (syncError) {
+      toast.error("Error syncing cart from Firestore:", syncError);
+    }
+    
   } catch (error) {
     console.error("Error signing in with Google:", error);
     throw new Error("Error signing in with Google");
@@ -68,9 +74,14 @@ const signInWithEmailPassword = async (email, password, dispatch) => {
     const user = result.user;
 
     dispatch(login(user));
-    const cartItem = await syncfirestore(user);
-    console.log(cartItem,">?>?>?>");
-    dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
+    try {
+      cartItem = await syncfirestore(user);
+      
+      dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
+    } catch (syncError) {
+      toast.error("Error syncing cart from Firestore:", syncError);
+    }
+    
   } catch (error) {
     console.error("Error signing in with email and password:", error);
     throw new Error("Error signing in with email and password");
@@ -80,10 +91,7 @@ const signInWithEmailPassword = async (email, password, dispatch) => {
 const signOutUser = async (dispatch) => {
   try {
     await signOut(auth);
-    dispatch(
-      logout()
-    );
-    
+    dispatch(logout());
   } catch (error) {
     console.error("Error signing out:", error);
     throw new Error("Error signing out");
