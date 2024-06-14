@@ -89,6 +89,7 @@ const signOutUser = async (dispatch) => {
   try {
     await signOut(auth);
     dispatch(logout());
+    
   } catch (error) {
     console.error("Error signing out:", error);
     throw new Error("Error signing out");

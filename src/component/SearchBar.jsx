@@ -11,10 +11,10 @@ export default function SearchBar() {
   const handleSearch = (e) => {
     e.preventDefault();
     const searchdata = searchRef.current.value;
-    // if (searchdata === "") {
-    //   toast.error("Please enter something to search");
-    //   return;
-    // }
+    if (searchdata === "") {
+      toast.error("Please enter something to search");
+      return;
+    }
     navigate(`/category/${searchdata}`)
     searchRef.current.value = "";
   };
