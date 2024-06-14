@@ -11,6 +11,7 @@ const cartSlice = createSlice({
   reducers: {
     updateCart: (state, action) => {
       const { cartItem, userId } = action.payload;
+      console.log(cartItem);
       state.cart = cartItem || []; // Ensure cartItem is always an array
 
       if (userId) {

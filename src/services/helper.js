@@ -17,8 +17,9 @@ export const fetchCartFromFirestore = async (userId) => {
   }
 
   const data = docSnap.data();
- 
-  return data.cart || []; // Assuming cart data is stored under 'cart' field
+  console.log(data, "datafrom firestore");
+  const firestoreCartArray = Object.values(data);
+  return firestoreCartArray || [];
 };
 
 export const saveCartToFirestore = async (userId, cart) => {
@@ -67,12 +68,13 @@ export const syncfirestore = async (user) => {
   }
 
   const firestoreCart = await fetchCartFromFirestore(user.uid);
-console.log(firestoreCart,"doctype");
+  console.log(firestoreCart, "doctype");
   const localCart = loadCartFromLocalStorage() || [];
+  console.log(localCart, "localcart");
 
-  const mergedCart = [...firestoreCart, ...localCart];
-
-  return mergedCart;
+  const mergedCart = [...localCart, ...firestoreCart];
+  console.log(mergedCart, "doctype>>");
+  return filterDuplicateItems(mergedCart);
 };
 
 export const ratepercents = (rate) => {
@@ -80,4 +82,17 @@ export const ratepercents = (rate) => {
     style: "currency",
     currency: "INR",
   });
+};
+
+const filterDuplicateItems = (cartItems) => {
+  // Use an object to track unique items by id
+  const uniqueItemsMap = cartItems.reduce((acc, item) => {
+    acc[item.id] = item;
+    return acc;
+  }, {});
+
+  // Convert the object values back to an array
+  const uniqueItemsArray = Object.values(uniqueItemsMap);
+
+  return uniqueItemsArray;
 };

@@ -55,13 +55,12 @@ const signInWithGoogle = async (dispatch) => {
 
     dispatch(login(user));
     try {
-      cartItem = await syncfirestore(user);
+      const cartItem = await syncfirestore(user);
       console.log("Cart synced successfully:", cartItem);
       dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
     } catch (syncError) {
       toast.error("Error syncing cart from Firestore:", syncError);
     }
-    
   } catch (error) {
     console.error("Error signing in with Google:", error);
     throw new Error("Error signing in with Google");
@@ -72,16 +71,14 @@ const signInWithEmailPassword = async (email, password, dispatch) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
-
     dispatch(login(user));
     try {
-      cartItem = await syncfirestore(user);
-      
+      const cartItem = await syncfirestore(user);
+      console.log("Cart synced successfully:", cartItem);
       dispatch(updateCart({ cartItem: cartItem, userId: user.uid }));
     } catch (syncError) {
       toast.error("Error syncing cart from Firestore:", syncError);
     }
-    
   } catch (error) {
     console.error("Error signing in with email and password:", error);
     throw new Error("Error signing in with email and password");
